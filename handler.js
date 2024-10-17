@@ -125,7 +125,7 @@ export async function handler(chatUpdate) {
                 if (!("antiLink" in chat)) chat.antiLink = false
                 if (!("antiSticker" in chat)) chat.antiSticker = false
                 if (!("antiToxic" in chat)) chat.antiToxic = false
-		if (!('anticall' in chat)) chat.antiCall = false
+		//if (!('anticall' in chat)) chat.antiCall = false
                 if (!("detect" in chat)) chat.detect = false
                 if (!("getmsg" in chat)) chat.getmsg = true
                 if (!("isBanned" in chat)) chat.isBanned = false
@@ -146,7 +146,7 @@ export async function handler(chatUpdate) {
                 global.db.data.chats[m.chat] = {
                     antiDelete: true,
                     antiLink: false,
-                    antiCall: false,
+                 //   antiCall: false,
                     antiSticker: false,
                     antiToxic: false,
 		    antiBotClone: false,
@@ -175,7 +175,7 @@ export async function handler(chatUpdate) {
                 if (!("self" in settings)) settings.self = false
                 if (!("autoread" in settings)) settings.autoread = false
                 if (!("restrict" in settings)) settings.restrict = false
-	        if (!('anticall' in settings)) settings.antiCall = false
+	       // if (!('anticall' in settings)) settings.antiCall = false
                 if (!("restartDB" in settings)) settings.restartDB = 0
                 if (!("status" in settings)) settings.status = 0
 		if (!('solopv' in settings)) settings.solopv = false // el bot responde solo por dm
@@ -185,7 +185,7 @@ export async function handler(chatUpdate) {
                 self: false,
                 autoread: false,
                 restrict: false,
-	        antiCall: false,
+	   //     antiCall: false,
                 restartDB: 0,
 		solopv: false, 
                 sologp: false,
@@ -199,7 +199,8 @@ export async function handler(chatUpdate) {
         //if (opts["gconly"] && !m.chat.endsWith("g.us")) return
 	if (settings.solopv && m.chat.endsWith('g.us')) return  
         if (settings.sologp && !m.chat.endsWith('g.us')) return
-        if (m.chat === '120363032639627036@g.us' && m.sender !== '923092668108@s.whatsapp.net') return;
+	//if (m.chat !== '120363032639627036@g.us') return
+       // if (m.chat === '120363032639627036@g.us' && m.sender !== '923092668108@s.whatsapp.net') return;
         if (opts["swonly"] && m.chat !== "status@broadcast") return
         if (typeof m.text !== "string")
             m.text = ""
@@ -501,23 +502,31 @@ export async function handler(chatUpdate) {
 if (!opts['noprint']) await (await import(`./lib/print.js`)).default(m, this)
 } catch (e) {
 console.log(m, m.quoted, e)}
-let settingsREAD = global.db.data.settings[this.user.jid] || {}  
-if (opts['autoread']) await this.readMessages([m.key])
+let settingsREAD = global.db.data.settings[this.user.jid] || {} 
+if (process.env.AUTOREAD === 'true') {
+    try {
+        await conn.readMessages([m.key]);
+    } catch (error) {
+    }
+}
+	    
 if (typeof process.env.STATUSVIEW === 'undefined' || process.env.STATUSVIEW.toLowerCase() === 'false') return;
 if (m.key.remoteJid === 'status@broadcast')
 	await conn.readMessages([m.key])
-if (settingsREAD.autoread2) await this.readMessages([m.key])  
-//if (settingsREAD.autoread2 == 'true') await this.readMessages([m.key])  
-	
+//if (settingsREAD.autoread2) await this.readMessages([m.key])  
+//if (settingsREAD.autoread2 == 'true') await this.readMessages([m.key]) 
+ 
+    }
+	    
 
-
-if (typeof process.env.AutoReaction === 'undefined' || process.env.AutoReaction.toLowerCase() === 'false') return; 
-if (m.text.match(/(prince|a|e|o|u|i|ا|م|dad|gds|oso|love|mente|pero|tion|age|sweet|kiss|cute|ate|and|but|ify)/gi)) {
+if (typeof process.env.AutoReaction === 'undefined' || process.env.AutoReaction.toLowerCase() === 'false') return;
+if (m.text.match(/(prince|a|e|i|o|u|g|q|ا|م|dad|gds|oso|love|mente|pero|tion|age|sweet|kiss|cute|ate|and|but|ify)/gi)) {
 let emot = pickRandom(["☺️", "😻", "😘", "🥰", "😱", "🤗", "🤫", "😚", "🤭", "☺️", "✨", "🎉", "💗", "♥️", "👑", "😚", "💞", "💖", "💓", "⚡️", "🌝", "🍓", "🍎", "🎈", "🪄", "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "💟", "🌝", "😎", "😍", "🕊️", "🥀", "🦋", "🐣", "❤‍🩹", "♥️", "😒", "🌸", "🌈", "❣️", "✨", "🙌", "👻", "👑", "🐤", "🪽", "🌙", "💫", "🪐", "☀️", "🌪️", "🧸", "🎀", "🎉", "🪞", "🖇️", "📎", "🩷", "🖤", "🤍", "🤎", "💛", "💚", "🩵", "💙", "💜", "💟", "💓", "🩶", "😑", "😶"])
 this.sendMessage(m.chat, { react: { text: emot, key: m.key }})}
 function pickRandom(list) { return list[Math.floor(Math.random() * list.length)]}
-}}
-        
+
+	    
+    }
     
             
 
